@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Are a Seller</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            color: #007bff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">You are a Seller</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="background-color: #007bff; color: #ffffff;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html" style="background-color: #007bff; color: #ffffff;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="seller.html" style="background-color: #717375; color: #ffffff;">Seller</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="buyer.html" style="background-color: #007bff; color: #ffffff;">Buyer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1 class="text-center">Seller Square</h1>
+        <div class="row justify-content-center">
+            <!-- Add Product Form -->
+            <div class="col-md-8">
+                <form id="seller-form">
+                    <div class="form-group">
+                        <label for="product-name">Product Name:</label>
+                        <input type="text" class="form-control" id="product-name" placeholder="Enter product name">
+                    </div>
+                    <!-- Add the Search Market Price button here -->
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" id="search-market-price">Search Market Price</button>
+                    </div>
+                    <!-- Display Market Prices -->
+                    <div id="market-prices" class="mt-3"></div>
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="number" class="form-control" id="price" placeholder="Enter price">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sell Product</button>
+                </form>
+                <!-- Success message -->
+                <div id="success-message" class="mt-3" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+
+        // Function to search for market price of a product by name
+function searchMarketPrice(productName) {
+    const database = JSON.parse(localStorage.getItem('database')) || [];
+    const prices = database
+        .filter(product => product.name.toLowerCase() === productName.toLowerCase())
+        .map(product => product.price);
+    return prices;
+}
+
+// Handle click event of the Search Market Price button
+document.getElementById('search-market-price').addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent default button behavior
+
+    // Retrieve input value
+    const productName = document.getElementById('product-name').value;
+
+    // Search for market price of the product
+    const marketPrices = searchMarketPrice(productName);
+
+    // Display market prices
+    // Display market prices
+    const marketPricesDiv = document.getElementById('market-prices');
+    marketPricesDiv.innerHTML = ''; // Clear previous results
+    if (marketPrices.length > 0) {
+        const pricesList = document.createElement('ul');
+        pricesList.classList.add('list-group');
+        marketPrices.forEach(price => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            
+            // Create a flex container
+            const flexContainer = document.createElement('div');
+            flexContainer.style.display = 'flex';
+            flexContainer.style.justifyContent = 'space-between'; // Align items to the right
+
+            // Add text content
+            const priceText = document.createElement('span');
+            priceText.textContent = `Price: $${price}`;
+            flexContainer.appendChild(priceText);
+
+            // Create a button to set the price
+            const setPriceButton = document.createElement('button');
+            setPriceButton.classList.add('btn', 'btn-success', 'btn-set-price');
+            setPriceButton.textContent = 'Set as Selling Price';
+            setPriceButton.addEventListener('click', function() {
+                // Set the price input value to the selected price
+                document.getElementById('price').value = price;
+            });
+
+            // Append the button to the flex container
+            flexContainer.appendChild(setPriceButton);
+
+            // Append the flex container to the list item
+            listItem.appendChild(flexContainer);
+
+            // Append the list item to the prices list
+            pricesList.appendChild(listItem);
+        });
+        marketPricesDiv.appendChild(pricesList);
+    } else {
+        marketPricesDiv.innerHTML = '<p>No market prices found for this product.</p>';
+    }
+});
+
+// Function to add a product to the database
+function addProduct(name, price) {
+    // Retrieve the current database from localStorage
+    let database = JSON.parse(localStorage.getItem('database')) || [];
+
+    // Add the new product to the database
+    const productId = database.length + 1;
+    database.push({ id: productId, name, price });
+
+    // Store the updated database back to localStorage
+    localStorage.setItem('database', JSON.stringify(database));
+}
+
+// Handle form submission
+document.getElementById('seller-form').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Retrieve input values
+    const productName = document.getElementById('product-name').value;
+    const price = document.getElementById('price').value;
+
+    // Check if price is valid (not null, blank, or <= 0)
+    if (price && parseFloat(price) > 0) {
+        // Add product to the database
+        addProduct(productName, price);
+
+        // Display success message
+        const successMessage = document.getElementById('success-message');
+        successMessage.textContent = 'Product added successfully.';
+        successMessage.style.display = 'block';
+
+        // Clear form fields after 2 seconds
+        setTimeout(() => {
+            document.getElementById('product-name').value = '';
+            document.getElementById('price').value = '';
+            location.reload(); // Refresh the page
+        }, 2000);
+    } else {
+        alert('Please enter a valid price greater than 0.');
+    }
+});
+
+    </script>
+</body>
+</html>

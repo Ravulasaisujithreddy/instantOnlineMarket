@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Page</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            color: #007bff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">You Are a Buyer</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="background-color: #007bff; color: #ffffff;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html" style="background-color: #007bff; color: #ffffff;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="seller.html" style="background-color: #717375; color: #ffffff;">Seller</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="buyer.html" style="background-color: #007bff; color: #ffffff;">Buyer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <h1 class="text-center">Groceries Hub</h1>
+        <div class="row justify-content-center">
+            <!-- Search Product Form -->
+            <div class="col-md-8">
+                <form id="buyer-form">
+                    <div class="form-group">
+                        <label for="search-product">Search for Product:</label>
+                        <input type="text" class="form-control" id="search-product" placeholder="Enter product name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                <!-- Display Search Results -->
+                <div id="search-results" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Function to search for products in the database
+        function searchProductsByName(name) {
+            // Retrieve the database from localStorage
+            const database = JSON.parse(localStorage.getItem('database')) || [];
+
+            // Search for products by name
+            return database.filter(product => product.name.toLowerCase().includes(name.toLowerCase()));
+        }
+
+        // Handle form submission
+        document.getElementById('buyer-form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Retrieve input value
+            const productName = document.getElementById('search-product').value;
+
+            // Search for products by name
+            const searchResults = searchProductsByName(productName);
+            
+            // Display search results with "Buy" option
+const searchResultsDiv = document.getElementById('search-results');
+searchResultsDiv.innerHTML = ''; // Clear previous results
+if (searchResults.length > 0) {
+    searchResults.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('card', 'mb-3');
+        productCard.innerHTML = `
+            <div class="card-body">
+                <h5 class="card-title">${product.name}</h5>
+                <p class="card-text">Price: $${product.price}</p>
+                <button class="btn btn-primary btn-buy" data-id="${product.id}">Buy</button>
+            </div>`;
+        searchResultsDiv.appendChild(productCard);
+    });
+    function removeProduct(productId) {
+    // Retrieve the current database from local storage
+    console.log("removeprod",productId)
+    let database = JSON.parse(localStorage.getItem('database')) || [];
+    console.log("before",database)
+    // Find the index of the product with the given productId
+    const index = database.findIndex(product => product.id == productId);
+    console.log("removeprod",index)
+    console.log("after",database)
+    // If the product is found, remove it from the database
+    if (index !== -1) {
+        database.splice(index, 1);
+        
+        // Update the database in local storage
+        localStorage.setItem('database', JSON.stringify(database));
+        
+        // Return the updated database
+        return database;
+    }
+}
+    // Add event listeners to Buy buttons
+    const buyButtons = document.querySelectorAll('.btn-buy');
+buyButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-id');
+        
+        // Remove product from localStorage database
+        const updatedDatabase = removeProduct(productId);
+        
+        if (updatedDatabase) {
+            // Remove product card from search results
+            const card = this.closest('.card');
+            card.remove();
+            
+            // Display "Bought" message
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('alert', 'alert-success', 'mt-2');
+            messageDiv.textContent = 'Product bought successfully!';
+            document.getElementById('search-results').appendChild(messageDiv);
+            
+            // Remove the message after 2 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 2000);
+        } else {
+            console.error('Error: Product could not be removed from the database.');
+        }
+    });
+});
+} else {
+    searchResultsDiv.innerHTML = '<p>No products found.</p>';
+}
+    });
+    </script>
+</body>
+</html>

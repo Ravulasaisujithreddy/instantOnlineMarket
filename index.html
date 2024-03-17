@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Instant Market Online Store</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Instant Market Online Store</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="background-color: #007bff; color: #ffffff;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html" style="background-color: #007bff; color: #ffffff;">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="seller.html" style="background-color: #717375; color: #ffffff;">Seller</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="buyer.html" style="background-color: #007bff; color: #ffffff;">Buyer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    
+
+    <div class="container mt-10"> <!-- Added mt-5 class for margin top -->
+        <h1 class="text-center mb-4">Instant Market Online Store</h1> <!-- Added mb-4 class for margin bottom -->
+        <div class="row justify-content-center">
+            <!-- Buyer Button -->
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="redirectTo('buyer.html')">Buyer</button>
+            </div>
+            <!-- Seller Button -->
+            <div class="col-md-4">
+                <button type="button" class="btn btn-primary btn-lg btn-block" onclick="redirectTo('seller.html')">Seller</button>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Function to redirect to a given URL
+        function addGroceriesToLocalStorage() {
+            if (!localStorage.getItem('database')) {
+            const database = [
+                "Shampoo",
+                "Conditioner",
+                "Toothpaste",
+                "Soap",
+                "Laundry Detergent",
+                "Dish Soap",
+                "Hand Soap",
+                "Body Wash",
+                "Toilet Paper",
+                "Paper Towels",
+                "Razors",
+                "Shaving Cream",
+                "Deodorant",
+                "Toothbrush",
+                "Mouthwash",
+                "Floss",
+                "Hair Gel",
+                "Hair Spray",
+                "Hairbrush",
+                "Comb",
+                "Lotion",
+                "Sunscreen",
+                "Chapstick",
+                "Makeup Remover",
+                "Facial Cleanser",
+                "Face Moisturizer",
+                "Facial Toner",
+                "Face Masks",
+                "Face Scrub",
+                "Face Serum",
+                "Eye Cream",
+                "Hand Cream",
+                "Nail Polish",
+                "Nail Polish Remover",
+                "Cotton Balls",
+                "Cotton Swabs",
+                "Shower Gel",
+                "Body Lotion",
+                "Body Scrub",
+                "Body Oil",
+                "Body Butter",
+                "Body Mist",
+                "Body Powder",
+                "Body Wash",
+                "Body Soap",
+                "Body Polish",
+                "Body Spray",
+                "Body Cream",
+                "Body Oil"
+            ];
+
+            const groceriesWithPrices = database.map((item, index) => ({
+                id: index + 1,
+                name: item,
+                price: Math.floor(Math.random() * 100) + 1 // Random price between 1 and 100
+            }));
+
+            // Store groceries in local storage
+            localStorage.setItem('database', JSON.stringify(groceriesWithPrices));
+        }
+            
+        }
+        addGroceriesToLocalStorage();
+        function redirectTo(url) {
+            window.location.href = url;
+        }
+        
+
+    </script>
+    
+    
+    
+    
+
+</body>
+
+</html>
